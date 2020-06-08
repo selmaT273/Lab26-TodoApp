@@ -9,8 +9,11 @@ namespace Lab26_TodoApp.Data
 {
     public class TodoDbContext : DbContext
     {
-        public TodoDbContext(DbContextOptions options : base(options)
+        public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options)
         {
+
         }
+
+        public DbSet<Todo> Todos { get; set; }
     }
 }

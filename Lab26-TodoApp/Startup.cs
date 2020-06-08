@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Lab26_TodoApp.Data;
+using Lab26_TodoApp.Models.Services;
+using Lab26_TodoApp.Models.Interfaces;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +35,7 @@ namespace Lab26_TodoApp
             {
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
