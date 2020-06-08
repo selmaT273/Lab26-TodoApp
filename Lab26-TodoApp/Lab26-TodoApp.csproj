@@ -1,10 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>Lab26_TodoApp</RootNamespace>
+    <UserSecretsId>ea4e91a0-831b-4695-a4e6-0fc4214c9094</UserSecretsId>
   </PropertyGroup>
-
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Data\" />
