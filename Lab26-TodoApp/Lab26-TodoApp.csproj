@@ -5,4 +5,12 @@
     <RootNamespace>Lab26_TodoApp</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+    <Folder Include="Data\" />
+    <Folder Include="Models\" />
+    <Folder Include="Models\Identity\" />
+    <Folder Include="Models\Interfaces\" />
+    <Folder Include="Models\Services\" />
+  </ItemGroup>
 </Project>
