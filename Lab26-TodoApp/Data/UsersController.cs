@@ -37,7 +37,11 @@ namespace Lab26_TodoApp.Data
 
             if (!result.Succeeded)
             {
-                return BadRequest("Registration did not succeed");
+                return BadRequest(new
+                {
+                    message = "Registration did not succeed",
+                    errors = result.Errors,
+                });
             }
 
             return Ok(new
