@@ -36,6 +36,11 @@ namespace Lab26_TodoApp
                 options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            services.AddDbContext<ApplicationUserDbContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("UsersConnection"));
+            });
+
             services.AddTransient<ITodoManager, TodoService>();
 
         }
