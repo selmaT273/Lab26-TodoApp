@@ -14,6 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Lab26_TodoApp.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Lab26_TodoApp
 {
@@ -46,8 +48,28 @@ namespace Lab26_TodoApp
             services.AddIdentity<TodoUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationUserDbContext>();
 
-            services.AddAuthentication()
-                .AddJwtBearer();
+       
+
+            services
+                .AddAuthentication()
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = true;
+
+                    var secret = Configuration["JWT:Secret"];
+                    var secretBytes = Encoding.UTF8.GetBytes(secret);
+                    var signingKey = new SymmetricSecurityKey(secretBytes);
+
+                    // how we know this token came from us 
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = signingKey,
+                        ValidateIssuer = false,
+                        ValidateAudience = false,
+                    };
+                });
             
 
             services.AddTransient<ITodoManager, TodoService>();
@@ -65,6 +87,7 @@ namespace Lab26_TodoApp
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {

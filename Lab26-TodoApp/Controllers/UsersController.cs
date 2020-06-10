@@ -28,6 +28,17 @@ namespace Lab26_TodoApp.Controllers
             this.configuration = configuration;
         }
 
+        [HttpGet("Self")]
+        public IActionResult Self()
+        {
+            var user = HttpContext.User;
+            if (!user.Identity.IsAuthenticated)
+            {
+                return Unauthorized();
+            }
+            return Ok();
+        }
+
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterData register)
         {
