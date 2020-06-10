@@ -4,7 +4,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Lab26_TodoApp.Models.Identity;
 using Microsoft.AspNetCore.Identity;
+using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Microsoft.Extensions.Configuration;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -15,12 +19,12 @@ namespace Lab26_TodoApp.Data
     public class UsersController : ControllerBase
     {
         private readonly UserManager<TodoUser> userManager;
-        private readonly SignInManager<TodoUser> signInManager;
+        private readonly IConfiguration configuration;
 
-        public UsersController(UserManager<TodoUser> userManager, SignInManager<TodoUser> signInManager)
+        public UsersController(UserManager<TodoUser> userManager, IConfiguration configuration)
         {
             this.userManager = userManager;
-            this.signInManager = signInManager;
+            this.configuration = configuration;
         }
 
         [HttpPost("Register")]
@@ -49,6 +53,7 @@ namespace Lab26_TodoApp.Data
             return Ok(new
             {
                 UserId = user.Id,
+                Token = CreateToken(user)
             });
         }
 
@@ -69,8 +74,23 @@ namespace Lab26_TodoApp.Data
             return Ok(new
             {
                 userId = user.Id,
+                Token = CreateToken(user)
+
             });
 
+        }
+
+        private JwtSecurityToken CreateToken(TodoUser user)
+        {
+            var secret = configuration["JWT:Secret"];
+            var secretBytes = Encoding.UTF8.GetBytes(secret);
+            var signingKey = new SymmetricSecurityKey(secretBytes);
+
+            var token = new JwtSecurityToken(
+                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+                );
+
+            return token;
         }
     }
 }
