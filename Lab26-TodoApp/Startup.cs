@@ -46,6 +46,10 @@ namespace Lab26_TodoApp
             services.AddIdentity<TodoUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationUserDbContext>();
 
+            services.AddAuthentication()
+                .AddJwtBearer();
+            
+
             services.AddTransient<ITodoManager, TodoService>();
 
         }
@@ -59,6 +63,8 @@ namespace Lab26_TodoApp
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
