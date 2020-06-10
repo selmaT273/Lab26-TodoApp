@@ -17,4 +17,11 @@ namespace Lab26_TodoApp.Models
 
         public string CreatedByUserId { get; set; }
     }
+
+    public class TodoDTO
+    {
+        public int Id { get; set; }
+        public string Title { get; set; }
+        public string CreatedBy { get; set; }
+    }
 }

@@ -18,6 +18,8 @@ namespace Lab26_TodoApp.Controllers
     {
         private ITodoManager _todos;
 
+        public object ClaimType { get; private set; }
+
         public TodoController(ITodoManager todos)
         {
             _todos = todos;
@@ -30,15 +32,37 @@ namespace Lab26_TodoApp.Controllers
             return await _todos.GetAllTodos();
         }
 
+        [HttpGet("{id}")]
+        public async Task<TodoDTO> Get(int id)
+        {
+            return await _todos.GetTodo(id);
+        }
+
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> Post([FromBody] Todo todo)
         {
             todo.CreatedByUserId = GetuserId();
+
             await _todos.CreateTodo(todo);
+             
 
             return Ok("complete");
 
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Put(int id, [FromBody] Todo todo)
+        {
+            await _todos.UpdateTodo(todo, id);
+            return Ok("Complete");
+        }
+
+        [HttpDelete("{id}")]
+        public async Task Delete(int id)
+        {
+            await _todos.DeleteTodo(id);
         }
 
         private string GetuserId()
