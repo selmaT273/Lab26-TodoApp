@@ -12,6 +12,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Lab26_TodoApp.Models.Identity;
+using Microsoft.AspNetCore.Identity;
 
 namespace Lab26_TodoApp
 {
@@ -41,6 +43,13 @@ namespace Lab26_TodoApp
                 options.UseSqlServer(Configuration.GetConnectionString("UsersConnection"));
             });
 
+            services.AddIdentity<TodoUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationUserDbContext>();
+
+            services.AddAuthentication()
+                .AddJwtBearer();
+            
+
             services.AddTransient<ITodoManager, TodoService>();
 
         }
@@ -54,6 +63,8 @@ namespace Lab26_TodoApp
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseEndpoints(endpoints =>
             {
