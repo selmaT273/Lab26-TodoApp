@@ -55,10 +55,12 @@ namespace Lab26_TodoApp
             services
                 .AddAuthentication(options =>
                 {
+                    // Avoid sending user to login page
                     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                     options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 })
+                // Authentication Handler
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;
@@ -68,7 +70,7 @@ namespace Lab26_TodoApp
                     var secretBytes = Encoding.UTF8.GetBytes(secret);
                     var signingKey = new SymmetricSecurityKey(secretBytes);
 
-                    // how we know this token came from us 
+                    // how we know this token came from us by telling us what secret to look at
                     options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,

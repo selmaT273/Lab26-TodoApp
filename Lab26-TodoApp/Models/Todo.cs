@@ -14,5 +14,7 @@ namespace Lab26_TodoApp.Models
         public string Assignee { get; set; }
 
         public int Difficulty { get; set; }
+
+        public string CreatedByUserId { get; set; }
     }
 }

@@ -16,6 +16,11 @@ namespace Lab26_TodoApp.Models.Services
             _context = context;
         }
 
+        public Task CreateTodo(Todo todo)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<List<Todo>> GetAllTodos()
         {
             return await _context.Todos.ToListAsync();
