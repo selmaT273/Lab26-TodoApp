@@ -11,6 +11,6 @@ namespace Lab26_TodoApp.Models.Interfaces
         Task<TodoDTO> GetTodo(int id);
         Task<Todo> UpdateTodo(Todo todo, int id);
         Task DeleteTodo(int id);
-        Task<List<Todo>> GetAllTodosByMe(string userId);
+        Task<List<Todo>> GetMyTodos(string userId);
     }
 }

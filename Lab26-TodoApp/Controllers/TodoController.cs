@@ -32,6 +32,13 @@ namespace Lab26_TodoApp.Controllers
             return await _todos.GetAllTodos();
         }
 
+        [Authorize]
+        [HttpGet("GetMyTodos")]
+        public async Task<List<Todo>> GetMyTodos()
+        {
+            return await _todos.GetMyTodos(GetuserId());
+        }
+
         [HttpGet("{id}")]
         public async Task<TodoDTO> Get(int id)
         {

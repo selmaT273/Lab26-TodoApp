@@ -66,7 +66,7 @@ namespace Lab26_TodoApp.Models.Services
             return todo;
         }
 
-        public Task<List<Todo>> GetAllTodosByMe(string userId)
+        public Task<List<Todo>> GetMyTodos(string userId)
         {
             return _context.Todos
                 .Where(t => t.CreatedByUserId != null && t.CreatedByUserId == userId)
