@@ -31,14 +31,25 @@ namespace Lab26_TodoApp.Controllers
 
         [Authorize]
         [HttpGet("Self")]
-        public IActionResult Self()
-        {
-            var user = HttpContext.User;
-            if (!user.Identity.IsAuthenticated)
+        public async Task<IActionResult> Self()
+        { 
+            if (HttpContext.User.Identity is ClaimsIdentity claimsIdentity)
             {
-                return Unauthorized();
+                var usernameClaim = claimsIdentity.FindFirst("UserId");
+                var userId = usernameClaim.Value;
+
+                var user = await userManager.FindByIdAsync(userId);
+
+                return Ok(new
+                {
+                    userId = user.Id,
+                    user.Email,
+                    user.FirstName,
+                    user.LastName,
+                });
             }
-            return Ok();
+
+            return Unauthorized();
         }
 
         [HttpPost("Register")]
