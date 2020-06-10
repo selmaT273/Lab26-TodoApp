@@ -15,10 +15,12 @@ namespace Lab26_TodoApp.Data
     public class UsersController : ControllerBase
     {
         private readonly UserManager<TodoUser> userManager;
+        private readonly SignInManager<TodoUser> signInManager;
 
-        public UsersController(UserManager<TodoUser> userManager)
+        public UsersController(UserManager<TodoUser> userManager, SignInManager<TodoUser> signInManager)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
         }
 
         [HttpPost("Register")]
@@ -48,6 +50,27 @@ namespace Lab26_TodoApp.Data
             {
                 UserId = user.Id,
             });
+        }
+
+        [HttpPost("Login")]
+        public async Task<IActionResult> Login(LoginData login)
+        {
+            var user = await userManager.FindByNameAsync(login.Username);
+            if(user == null)
+            {
+                return Unauthorized();
+            }
+            var result = await userManager.CheckPasswordAsync(user, login.Password);
+            if (!result)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(new
+            {
+                userId = user.Id,
+            });
+
         }
     }
 }
