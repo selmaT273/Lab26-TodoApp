@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
+using System.Security.Claims;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -80,17 +81,25 @@ namespace Lab26_TodoApp.Data
 
         }
 
-        private JwtSecurityToken CreateToken(TodoUser user)
+        private string CreateToken(TodoUser user)
         {
             var secret = configuration["JWT:Secret"];
             var secretBytes = Encoding.UTF8.GetBytes(secret);
             var signingKey = new SymmetricSecurityKey(secretBytes);
 
-            var token = new JwtSecurityToken(
-                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
-                );
+            var tokenClaims = new[]
+            {
+                new Claim("UserId", user.Id),
+                new Claim("FullName", $"{user.FirstName} {user.LastName}"),
+            };
 
-            return token;
+            var token = new JwtSecurityToken(
+                claims: tokenClaims,
+                signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
+                ) ;
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            return tokenString;
         }
     }
 }
