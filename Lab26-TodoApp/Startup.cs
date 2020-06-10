@@ -16,6 +16,7 @@ using Lab26_TodoApp.Models.Identity;
 using Microsoft.AspNetCore.Identity;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace Lab26_TodoApp
 {
@@ -46,12 +47,18 @@ namespace Lab26_TodoApp
             });
 
             services.AddIdentity<TodoUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationUserDbContext>();
+                .AddEntityFrameworkStores<ApplicationUserDbContext>()
+                .AddDefaultTokenProviders();
 
        
 
             services
-                .AddAuthentication()
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
                 .AddJwtBearer(options =>
                 {
                     options.RequireHttpsMetadata = false;

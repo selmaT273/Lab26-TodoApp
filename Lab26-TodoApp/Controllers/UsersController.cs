@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -28,6 +29,7 @@ namespace Lab26_TodoApp.Controllers
             this.configuration = configuration;
         }
 
+        [Authorize]
         [HttpGet("Self")]
         public IActionResult Self()
         {
@@ -105,6 +107,7 @@ namespace Lab26_TodoApp.Controllers
             };
 
             var token = new JwtSecurityToken(
+                expires: DateTime.UtcNow.AddMonths(4),
                 claims: tokenClaims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
                 ) ;
