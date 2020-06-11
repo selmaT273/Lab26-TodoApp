@@ -10,6 +10,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -26,6 +27,29 @@ namespace Lab26_TodoApp.Controllers
         {
             this.userManager = userManager;
             this.configuration = configuration;
+        }
+
+        [Authorize]
+        [HttpGet("Self")]
+        public async Task<IActionResult> Self()
+        { 
+            if (HttpContext.User.Identity is ClaimsIdentity claimsIdentity)
+            {
+                var usernameClaim = claimsIdentity.FindFirst("UserId");
+                var userId = usernameClaim.Value;
+
+                var user = await userManager.FindByIdAsync(userId);
+
+                return Ok(new
+                {
+                    userId = user.Id,
+                    user.Email,
+                    user.FirstName,
+                    user.LastName,
+                });
+            }
+
+            return Unauthorized();
         }
 
         [HttpPost("Register")]
@@ -94,6 +118,7 @@ namespace Lab26_TodoApp.Controllers
             };
 
             var token = new JwtSecurityToken(
+                expires: DateTime.UtcNow.AddMonths(4),
                 claims: tokenClaims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
                 ) ;
