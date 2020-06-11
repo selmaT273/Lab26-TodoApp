@@ -79,7 +79,12 @@ namespace Lab26_TodoApp
                         ValidateAudience = false,
                     };
                 });
-            
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("todo.delete",
+                    policy => policy.RequireClaim("permissions", "delete"));
+            });
 
             services.AddTransient<ITodoManager, TodoService>();
 
@@ -102,6 +107,30 @@ namespace Lab26_TodoApp
             {
                 endpoints.MapDefaultControllerRoute();
             });
+
+            // using (var scope = app.ApplicationServices.CreateScope())
+            // {
+            // var userManager = scope.ApplicationServices.GetService<UserManager<TodoUser>>();
+            // SeedDatabase(userManager);
+            // }
+
+
         }
+
+        //private void SeedDatabase(UserManager<TodoUser> userManager)
+        //{
+        //    
+
+        //    var hasUsers = await userManager.Users.AnyAsync();
+        //    if (hasUsers)
+        //    {
+        //        return;
+        //    }
+        // 
+        //    dbContext.Users.Add()
+        //    Todo: add roles, initial admin user with known password, assign admin user to admin role
+        //    userManager.CreateAsync(new BlogUser { ... } "p@ssw0rd");
+        //    userManager.AddToRoleAsync(user, "admin");
+        //}
     }
 }

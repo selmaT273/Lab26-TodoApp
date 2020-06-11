@@ -22,8 +22,9 @@ namespace Lab26_TodoApp.Controllers
     {
         private readonly UserManager<TodoUser> userManager;
         private readonly IConfiguration configuration;
+        private object userClaimsPrincipalFactory;
 
-        public UsersController(UserManager<TodoUser> userManager, IConfiguration configuration)
+        public UsersController(UserManager<TodoUser> userManager, IUserClaimsPrincipalFactory<TodoUser> userClaimsPrincipalFactory, IConfiguration configuration)
         {
             this.userManager = userManager;
             this.configuration = configuration;
@@ -111,17 +112,19 @@ namespace Lab26_TodoApp.Controllers
             var secretBytes = Encoding.UTF8.GetBytes(secret);
             var signingKey = new SymmetricSecurityKey(secretBytes);
 
+            //var userPrincipal = await userClaimsPrincipalFactory.CreateAsync(user);
             var tokenClaims = new[]
             {
                 new Claim("UserId", user.Id),
                 new Claim("FullName", $"{user.FirstName} {user.LastName}"),
             };
+            //add the .Concat stuff here 
 
             var token = new JwtSecurityToken(
                 expires: DateTime.UtcNow.AddMonths(4),
                 claims: tokenClaims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
-                ) ;
+                );
 
             var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
             return tokenString;

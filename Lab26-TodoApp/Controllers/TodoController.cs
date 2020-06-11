@@ -67,6 +67,8 @@ namespace Lab26_TodoApp.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Administrator")]
+        //[Authorize(Policy = "todos.delete")]
         public async Task Delete(int id)
         {
             await _todos.DeleteTodo(id);
