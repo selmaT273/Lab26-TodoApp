@@ -82,6 +82,10 @@ namespace Lab26_TodoApp
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy("todos.create",
+                    policy => policy.RequireClaim("permissions", "create"));
+                options.AddPolicy("todos.update",
+                    policy => policy.RequireClaim("permissions", "update"));
                 options.AddPolicy("todos.delete",
                     policy => policy.RequireClaim("permissions", "delete"));
             });

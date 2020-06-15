@@ -58,7 +58,7 @@ namespace Lab26_TodoApp.Controllers
 
 
         [HttpPost]
-        [Authorize]
+        [Authorize(Policy = "todos.create")]
         public async Task<IActionResult> Post([FromBody] Todo todo)
         {
             todo.CreatedByUserId = GetuserId();
@@ -73,7 +73,7 @@ namespace Lab26_TodoApp.Controllers
 
 
         [HttpPut("{id}")]
-        [Authorize]
+        [Authorize(Policy = "todos.update")]
         public async Task<IActionResult> Put(int id, [FromBody] Todo todo)
         {
             //todo.ModifiedByUserId = GetuserId();
@@ -84,8 +84,7 @@ namespace Lab26_TodoApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        [Authorize(Roles = "Administrator")]
-        //[Authorize(Policy = "todos.delete")]
+        [Authorize(Policy = "todos.delete")]
         public async Task Delete(int id)
         {
             await _todos.DeleteTodo(id);
