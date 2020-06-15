@@ -23,11 +23,14 @@ namespace Lab26_TodoApp.Controllers
     {
         private readonly UserManager<TodoUser> userManager;
         private readonly IConfiguration configuration;
-        private object userClaimsPrincipalFactory;
+        private readonly IUserClaimsPrincipalFactory<TodoUser> userClaimsPrincipalFactory;
 
-        public UsersController(UserManager<TodoUser> userManager, IUserClaimsPrincipalFactory<TodoUser> userClaimsPrincipalFactory, IConfiguration configuration)
+        public UsersController(UserManager<TodoUser> userManager,
+            IUserClaimsPrincipalFactory<TodoUser> userClaimsPrincipalFactory,
+            IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.userClaimsPrincipalFactory = userClaimsPrincipalFactory;
             this.configuration = configuration;
         }
 
@@ -87,7 +90,7 @@ namespace Lab26_TodoApp.Controllers
             return Ok(new
             {
                 UserId = user.Id,
-                Token = CreateToken(user)
+                Token = await CreateTokenAsync(user)
             });
         }
 
@@ -108,25 +111,25 @@ namespace Lab26_TodoApp.Controllers
             return Ok(new
             {
                 userId = user.Id,
-                Token = CreateToken(user)
+                Token = await CreateTokenAsync(user)
 
             });
 
         }
 
-        private string CreateToken(TodoUser user)
+        private async Task<string> CreateTokenAsync(TodoUser user)
         {
             var secret = configuration["JWT:Secret"];
             var secretBytes = Encoding.UTF8.GetBytes(secret);
             var signingKey = new SymmetricSecurityKey(secretBytes);
 
-            //var userPrincipal = await userClaimsPrincipalFactory.CreateAsync(user);
+            var userPrincipal = await userClaimsPrincipalFactory.CreateAsync(user);
             var tokenClaims = new[]
             {
                 new Claim("UserId", user.Id),
                 new Claim("FullName", $"{user.FirstName} {user.LastName}"),
-            };
-            //add the .Concat stuff here 
+            }.Concat(userPrincipal.Claims);
+
 
             var token = new JwtSecurityToken(
                 expires: DateTime.UtcNow.AddMonths(4),
