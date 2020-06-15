@@ -27,6 +27,7 @@ namespace Lab26_TodoApp.Data
             {
                 Id = "moderator",
                 Name = "Moderator",
+                NormalizedName = "MODERATOR",
                 ConcurrencyStamp = "79b16ad0-71fc-4d45-851a-c8c0544adf1d",
             };
             builder.Entity<IdentityRole>()
@@ -37,7 +38,7 @@ namespace Lab26_TodoApp.Data
                     new IdentityRoleClaim<string> { Id = 1, RoleId = "admin", ClaimType = "Permissions", ClaimValue = "delete" },
                     new IdentityRoleClaim<string> { Id = 2, RoleId = "admin", ClaimType = "Permissions", ClaimValue = "create" },
                     new IdentityRoleClaim<string> { Id = 3, RoleId = "admin", ClaimType = "Permissions", ClaimValue = "read" },
-                    new IdentityRoleClaim<string> { Id = 4, RoleId = "admin", ClaimType = "Permissions", ClaimValue = "update" }
+                    new IdentityRoleClaim<string> { Id = 4, RoleId = "moderator", ClaimType = "Permissions", ClaimValue = "update" }
                 );
         }
     }

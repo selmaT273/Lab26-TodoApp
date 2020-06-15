@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -53,6 +54,8 @@ namespace Lab26_TodoApp.Controllers
             return Unauthorized();
         }
 
+        //[AllowAnonymous]
+        //[Authorize]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterData register)
         {
@@ -75,6 +78,11 @@ namespace Lab26_TodoApp.Controllers
                     errors = result.Errors,
                 });
             }
+
+            //if (User.IsInRole("Administrator") || !await userManager.Users.AnyAsync())
+            //{
+            //    await userManager.AddToRolesAsync(user, register.Roles);
+            //}
 
             return Ok(new
             {
