@@ -8,7 +8,7 @@ namespace Lab26_TodoApp.Models.Interfaces
     {
         Task<List<Todo>> GetAllTodos();
         Task CreateTodo(Todo todo);
-        Task<TodoDTO> GetTodo(int id);
+        Task<TodoDTO> GetTodo(int id, string userId);
         Task<Todo> UpdateTodo(Todo todo, int id);
         Task DeleteTodo(int id);
         Task<List<Todo>> GetMyTodos(string userId);

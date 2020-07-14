@@ -11,6 +11,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -22,10 +23,14 @@ namespace Lab26_TodoApp.Controllers
     {
         private readonly UserManager<TodoUser> userManager;
         private readonly IConfiguration configuration;
+        private readonly SignInManager<TodoUser> signInManager;
 
-        public UsersController(UserManager<TodoUser> userManager, IConfiguration configuration)
+        public UsersController(UserManager<TodoUser> userManager,
+            SignInManager<TodoUser> signInManager,
+            IConfiguration configuration)
         {
             this.userManager = userManager;
+            this.signInManager = signInManager;
             this.configuration = configuration;
         }
 
@@ -52,6 +57,8 @@ namespace Lab26_TodoApp.Controllers
             return Unauthorized();
         }
 
+        //[AllowAnonymous]
+        //[Authorize]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(RegisterData register)
         {
@@ -75,10 +82,15 @@ namespace Lab26_TodoApp.Controllers
                 });
             }
 
+            //if (User.IsInRole("Administrator") || !await userManager.Users.AnyAsync())
+            //{
+            //    await userManager.AddToRolesAsync(user, register.Roles);
+            //}
+
             return Ok(new
             {
                 UserId = user.Id,
-                Token = CreateToken(user)
+                Token = await CreateTokenAsync(user)
             });
         }
 
@@ -99,27 +111,31 @@ namespace Lab26_TodoApp.Controllers
             return Ok(new
             {
                 userId = user.Id,
-                Token = CreateToken(user)
+                Token = await CreateTokenAsync(user)
 
             });
 
         }
 
-        private string CreateToken(TodoUser user)
+        private async Task<string> CreateTokenAsync(TodoUser user)
         {
             var secret = configuration["JWT:Secret"];
             var secretBytes = Encoding.UTF8.GetBytes(secret);
             var signingKey = new SymmetricSecurityKey(secretBytes);
 
-            var tokenClaims = new[]
+            var principal = await signInManager.CreateUserPrincipalAsync(user);
+            var identity = (ClaimsIdentity)principal.Identity;
+
+            identity.AddClaims(new[]
             {
                 new Claim("UserId", user.Id),
                 new Claim("FullName", $"{user.FirstName} {user.LastName}"),
-            };
+            });
+
 
             var token = new JwtSecurityToken(
                 expires: DateTime.UtcNow.AddMonths(4),
-                claims: tokenClaims,
+                claims: identity.Claims,
                 signingCredentials: new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256)
                 ) ;
 

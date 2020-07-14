@@ -40,10 +40,10 @@ namespace Lab26_TodoApp.Models.Services
             return await _context.Todos.ToListAsync();
         }
 
-        public async Task<TodoDTO> GetTodo(int id)
+        public async Task<TodoDTO> GetTodo(int id, string userId)
         {
             var todo = await _context.Todos.FindAsync(id);
-            if (todo == null) return null;
+            if (todo == null || todo.CreatedByUserId != userId) return null;
 
             var user = await userManager.FindByIdAsync(todo.CreatedByUserId);
 

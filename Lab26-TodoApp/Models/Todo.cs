@@ -16,6 +16,12 @@ namespace Lab26_TodoApp.Models
         public int Difficulty { get; set; }
 
         public string CreatedByUserId { get; set; }
+
+        public DateTime CreatedByTimestamp { get; set; }
+
+        public string ModifiedByUserId { get; set; }
+
+        public DateTime? ModifiedByTimestamp { get; set; }
     }
 
     public class TodoDTO
